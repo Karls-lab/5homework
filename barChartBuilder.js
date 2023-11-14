@@ -1,5 +1,5 @@
 class BarChartBuilder {
-    constructor(container, dataset, xAttribute, yAttribute, xunits="", yunits="", margin) {
+    constructor(container, dataset, xAttribute, yAttribute, xunits="", yunits="", margin, xTitle, yTitle) {
         this.container = container;
         this.dataset = dataset;
         this.xAttribute = xAttribute;
@@ -9,6 +9,8 @@ class BarChartBuilder {
         this.margin = margin;
         this.width = 0;
         this.height = 0;
+        this.xTitle = xTitle;
+        this.yTitle = yTitle;
 
         // setup SVG container and initial dimensions
         this.svg = null; 
@@ -58,13 +60,14 @@ class BarChartBuilder {
     // PROCESS DATA
     processData(data) {
         data.forEach(d => {
+            console.log(d);
             d[this.xAttribute] = d[this.xAttribute];
             d[this.yAttribute] = +d[this.yAttribute];
         });
     }
 
 
-    // LOGIC TO UPDATE THE CHART
+    // LOGIC TO UPDATE THE CHART MAIN
     updateChart(data) {
         // remove old chart when updated 
         this.svg.selectAll(".bar").remove();
@@ -76,10 +79,10 @@ class BarChartBuilder {
             .enter()
             .append("rect") // Change "circle" to "rect" for bars
             .attr("class", "bar")
+            .attr("data-county", d => d[this.xAttribute])
             // tried switching the x, y and width/height attributes to make it horizontal
             .attr("x", this.margin.right)
-            .attr("y", d => this.margin.top + xScale(d[this.xAttribute]))
-            // .attr("x", d => this.margin.top + yScale(d[this.yAttribute]))
+            .attr("y", d => this.margin.top + xScale(d[this.xAttribute]) + 5)
             .attr("height", xScale.bandwidth())
             .attr("width", d => yScale(d[this.yAttribute]))
             .style("fill", d => this.getColorXAttribute(d[this.xAttribute]));
@@ -90,6 +93,9 @@ class BarChartBuilder {
 
         // Update the Titles 
         this.updateTitles();
+
+        // Add mouse events
+        this.addMouseEvents();
     }
 
 
@@ -168,15 +174,17 @@ class BarChartBuilder {
             .attr("transform", `translate(${this.margin.right}, ${this.margin.top})`) // Adjust the translation
             .call(yAxis)
             .selectAll("text")
+            // .attr("x", 0) // left or right
+            .attr("y", 5) // up or down
             ;
     }
 
 
     // UPDATE TITLES
     updateTitles() {
-        var title = `${this.xAttribute} vs ${this.yAttribute}`;
-        var xTitle = `${this.xAttribute} ${this.xunits}`;
-        var yTitle = `${this.yAttribute} ${this.yunits}`;
+        var title = `${this.xTitle} vs ${this.yTitle}`;
+        var xTitle = `${this.yTitle}`;
+        var yTitle = `${this.xTitle}`;
 
         // remove old titles 
         this.svg.selectAll(".title").remove();
@@ -209,4 +217,65 @@ class BarChartBuilder {
             .attr("font-size", 25)
             .text(xTitle);
     }
+    
+    
+
+    // MOUSE EVENTS ****
+    addMouseEvents() {
+        var original_color = null;
+        var self = this;
+
+        this.svg.selectAll(".bar")
+            .on("mouseover", function (d) {
+                original_color = d3.select(this).style("fill");
+                d3.select(this).style("fill", "#e41a1c");
+
+                // Call the callback with the xAttribute (county name)
+                const countyName = d.srcElement.__data__[self.xAttribute];
+                if (self.countyHoverCallback) {
+                    self.countyHoverCallback(countyName);
+                }
+            })
+            .on("mouseout", function () {
+                d3.select(this).style("fill", function () {
+                    return original_color;
+                });
+                self.countyHoverCallback(null);
+            });
+    }
+
+    // UPDATE COLOR OF COUNTY 
+    highLightCounty(countyName) {
+        console.log("Highlighting bar chart! :): ", countyName);
+        var original_color = null;
+        // Get the path element for the specified county
+        const countyBar = this.svg.select(`rect[data-county="${countyName}"]`);
+        console.log(countyBar);
+        if (!countyBar.empty()) {
+            // Save the original color
+            const originalColor = countyBar.style("fill");
+
+            // Change the color to highlight
+            countyBar.style("fill", "#e41a1c");
+            return originalColor;
+        }
+    }
+
+    // RESET COLOR OF COUNTY
+    resetCounty(countyName, color) {
+        // Get the path element for the specified county
+        const countyBar = this.svg.select(`rect[data-county="${countyName}"]`);
+        if (!countyBar.empty()) {
+            // Reset the color
+            console.log("Resetting bar chart! :): ", color);
+            countyBar.style("fill", color);
+        }
+    }
+
+    // CALLBACK FUNCTION
+    setCountyHoverCallback(callback) {
+        this.countyHoverCallback = callback;
+        this.addMouseEvents();
+    }
+    // END MOUSE EVENTS ****
 }

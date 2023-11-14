@@ -1,59 +1,59 @@
-California Counties,Births in 2015
-Alameda County,19835
-Alpine County,4
-Amador County,304
-Butte County,2496
-Calaveras County,351
-Colusa County,285
-Contra Costa County,12755
-Del Norte County,294
-El Dorado County,1592
-Fresno County,15773
-Glenn County,400
-Humboldt County,1486
-Imperial County,3290
-Inyo County,212
-Kern County,14257
-Kings County,2350
-Lake County,731
-Lassen County,298
-Los Angeles County,128650
-Madera County,2309
-Marin County,2300
-Mariposa County,142
-Mendocino County,1031
-Merced County,4149
-Modoc County,53
-Mono County,138
-Monterey County,6512
-Napa County,1484
-Nevada County,827
-Orange County,38707
-Placer County,3676
-Plumas County,139
-Riverside County,30742
-Sacramento County,19981
-San Benito County,719
-San Bernardino County,31306
-San Diego County,44755
-San Francisco County,9080
-San Joaquin County,10148
-San Luis Obispo County,2649
-San Mateo County,9165
-Santa Barbara County,5857
-Santa Clara County,23853
-Santa Cruz County,3004
-Shasta County,2083
-Sierra County,18
-Siskiyou County,411
-Solano County,5275
-Sonoma County,5162
-Stanislaus County,7789
-Sutter County,1348
-Tehama County,822
-Trinity County,102
-Tulare County,7634
-Tuolumne County,473
-Ventura County,10501
-Yolo County,2413
-Yuba County,1183
+CTYNAME,BIRTHS2015
+Alameda,19835
+Alpine,4
+Amador,304
+Butte,2496
+Calaveras,351
+Colusa,285
+Contra Costa,12755
+Del Norte,294
+El Dorado,1592
+Fresno,15773
+Glenn,400
+Humboldt,1486
+Imperial,3290
+Inyo,212
+Kern,14257
+Kings,2350
+Lake,731
+Lassen,298
+Los Angeles,128650
+Madera,2309
+Marin,2300
+Mariposa,142
+Mendocino,1031
+Merced,4149
+Modoc,53
+Mono,138
+Monterey,6512
+Napa,1484
+Nevada,827
+Orange,38707
+Placer,3676
+Plumas,139
+Riverside,30742
+Sacramento,19981
+San Benito,719
+San Bernardino,31306
+San Diego,44755
+San Francisco,9080
+San Joaquin,10148
+San Luis Obispo,2649
+San Mateo,9165
+Santa Barbara,5857
+Santa Clara,23853
+Santa Cruz,3004
+Shasta,2083
+Sierra,18
+Siskiyou,411
+Solano,5275
+Sonoma,5162
+Stanislaus,7789
+Sutter,1348
+Tehama,822
+Trinity,102
+Tulare,7634
+Tuolumne,473
+Ventura,10501
+Yolo,2413
+Yuba,1183

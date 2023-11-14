@@ -143,6 +143,8 @@ class ChoroplethBuilder{
     }
 
 
+
+    // MOUSE EVENTS ****
     async mouseEvents(stateData, path, colorScale) {
         d3.csv("data/co-est2016-alldata.csv").then(data => {
             this.appendCounties(stateData, path, colorScale);
@@ -150,37 +152,90 @@ class ChoroplethBuilder{
         });
     }
 
-
     appendCounties(stateData, path, colorScale) {
         this.svg.append("g")
             .attr("class", "counties")
             .selectAll("path")
-            .data(stateData.features)
+            .data(stateData.features, d => d.properties.NAME)
             .enter().append("path")
             .attr("d", path)
+            .attr("data-name", function(d) { return d.properties.NAME; })
             .style("fill", d => {
                 if (d.properties.NAME === undefined) return "black";
                 else {
-                    const countyName = d.properties.NAME + " County";
+                    const countyName = d.properties.NAME;
                     return this.colorCounty(countyName, colorScale);
                 } 
         });
     }
 
-
     addMouseEvents() {
-    var original_color = null;
-    d3.selectAll(".counties path")
-        .on("mouseenter", function (d) {
+        var original_color = null;
+        var self = this;
+
+        d3.selectAll(".counties path")
+        .on("mouseover", function (d) {
             original_color = d3.select(this).style("fill");
             d3.select(this).style("fill", "#e41a1c");
+
+            // get county name for callback
+            const countyName = d.srcElement.__data__.properties.NAME;
+            if (self.setCountyHoverCallback) {
+                self.setCountyHoverCallback(countyName);
+            }
         })
-        .on("mouseleave", function (d) {
+        .on("mouseout", function () {
             d3.select(this).style("fill", function () {
                 return original_color;
             });
+            self.setCountyHoverCallback(null);
         });
+        // .on("mouseleave", function (d) {
+            // d3.select(this).style("fill", function () {
+                // d3.select(this).style("fill", original_color);
+                // const countyName = d.srcElement.__data__.properties.NAME;
+                // console.log("original_color calling reset: ", original_color)
+                // self.resetCounty(countyName, original_color);
+            // });
+        // });
     }
+
+    // CALL BACK FUNCTION
+    setCountyHoverCallback(callback) {
+        this.setCountyHoverCallback = callback;
+        this.addMouseEvents();
+    }
+
+    // UPDATE COLOR OF COUNTY 
+    highLightCounty(countyName) {
+        console.log("County is hovered: in chorpath", countyName);
+        var original_color = null;
+        // Get the path element for the specified county
+        // css path:
+        // html body div.flex-container div.barChartContainer svg.barChartContainer rect.bar
+        const countyPath = this.svg.select(`.counties path[data-name="${countyName}"]`);
+        console.log(countyPath);
+        if (!countyPath.empty()) {
+            // Save the original color
+            const originalColor = countyPath.style("fill");
+
+            // Change the color to highlight
+            countyPath.style("fill", "#e41a1c");
+            return originalColor;
+        }
+    }
+
+    // RESET COLOR OF COUNTY
+    resetCounty(countyName, color) {
+        // Get the path element for the specified county
+        const countyPath = this.svg.select(`.counties path[data-name="${countyName}"]`);
+        if (!countyPath.empty()) {
+            // Reset the color
+            console.log("reseting color: ", color);
+            countyPath.style("fill", color);
+        }
+    }
+    // END MOUSE EVENTS ****
 
 
     // Function to create the legend
@@ -241,6 +296,10 @@ class ChoroplethBuilder{
             .attr("font-size", 28)
             .text("California Average Unemployment rates by County in 2015");
     }
+
+
+
+
 
 } // END CLASS
 

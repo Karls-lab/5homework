@@ -1,28 +1,33 @@
 import pandas as pd 
 import numpy as np
 
-# df = pd.read_csv('data/co-est2016-alldata.csv', encoding='latin-1')
-# print(df.head())
-# df = df[df['STNAME'] == 'California']
-# births = df[['CTYNAME', 'BIRTHS2015']] 
-# popEstimate = df[['CTYNAME', 'DEATHS2015']] 
-# births.to_csv('data/births.csv', index=False)
-# popEstimate.to_csv('data/deaths.csv', index=False)
+df = pd.read_csv('data/co-est2016-alldata.csv', encoding='latin-1')
+print(df.head())
+df = df[df['STNAME'] == 'California']
+df['CTYNAME'] = df['CTYNAME'].str.replace(' County', '')
+df = df[df['CTYNAME'] != 'California']
+# remove county name of California
+births = df[['CTYNAME', 'BIRTHS2015']] 
+popEstimate = df[['CTYNAME', 'DEATHS2015']] 
+births.to_csv('data/births.csv', index=False)
+popEstimate.to_csv('data/deaths.csv', index=False)
 
 
 
-"""
-Get enemployment data for each Californial county of in the year 2015
-"""
-df = pd.read_csv('data/output.csv')
-df = df[['Year', 'State', 'County', 'Rate']]
-df = df[df['Year'] == 2015]
-df = df[df['State'] == 'California']
-df = df[['County', 'Rate']]
-df = df.groupby('County').agg({'Rate': 'mean'}).reset_index()
-df['Rate'] = df['Rate'].round(2)
-print(df.head(100))
-df.to_csv('data/California_Unemployment.csv', index=False)
+# """
+# Get enemployment data for each Californial county of in the year 2015
+# """
+# df = pd.read_csv('data/output.csv')
+# df = df[['Year', 'State', 'County', 'Rate']]
+# df = df[df['Year'] == 2015]
+# df = df[df['State'] == 'California']
+# df = df[['County', 'Rate']]
+# df = df.groupby('County').agg({'Rate': 'mean'}).reset_index()
+# df['Rate'] = df['Rate'].round(2)
+# # remove the word 'County' from the county name
+# df['County'] = df['County'].str.replace(' County', '')
+# print(df.head(100))
+# df.to_csv('data/California_Unemployment.csv', index=False)
 
 
 # filter countries down to United States, Germany, China, and Japan
